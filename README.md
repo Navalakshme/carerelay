@@ -4,7 +4,38 @@ Elder-controlled medication coordination and accountable family care.
 
 ## Status
 
-Planning and repository foundation only. No application, authentication, notification service, or clinical decision support is implemented yet.
+Interactive, dependency-free browser prototype in the selected Peach & Plum design. It includes fictional dose reporting, an append-only care history, acknowledged handoffs with a simulated backup deadline, elder-approved future plan time changes, circle removal, a larger-text elder view, and an approved visit-brief download.
+
+This is a single-session demo, not a deployed care service. Records reset on refresh. Role selection is a demonstration control, not authentication. No database, email delivery, real invitations, clinical decision support, or emergency monitoring is connected. Client-side rules are not a security boundary.
+
+## Run the demo
+
+With Node.js 22 or later, from this folder:
+
+```powershell
+npm start
+```
+
+Open `http://127.0.0.1:4173`. No dependency installation or API keys are needed. The server only serves the four application assets on loopback. The page works with system font fallbacks if optional Google Fonts cannot load.
+
+Run the domain checks:
+
+```powershell
+npm test
+```
+
+In restricted Windows environments where Node reports an `EPERM` while resolving parent directories, use `node --preserve-symlinks --preserve-symlinks-main scripts/serve.mjs` and `node --preserve-symlinks --preserve-symlinks-main --test tests/domain.test.mjs`.
+
+## Walk through the fictional story
+
+1. Start as Anya. Report the morning outcome as **I'm unsure** and confirm. The care history retains this report.
+2. Advance the demo clock by 30 minutes before acknowledging. Ravi becomes the assigned backup exactly once. Switch the demo role to Ravi and acknowledge ownership.
+3. Open **Medication plan** and propose a different time. Today's occurrence stays at 08:00 while approval is pending.
+4. Switch to Meera and approve the request. The approved time is shown for the next demonstration day; this prototype does not generate that day's occurrences.
+5. Open **Visit brief**, add a question, approve as Meera, and download the text brief. A new care event invalidates that approval.
+6. In **Care circle**, Meera can remove a participant. Their role disappears from this session's selector. Server-side session revocation remains future work.
+
+`domain.mjs` contains care rules separately from `app.mjs` rendering. Tests cover duplicate and conflicting completion reports, uncertainty history, single ownership, one-time backup escalation, elder approval, demo role restrictions, revocation, validation, and brief approval invalidation. See [prototype validation](docs/prototype-validation.md) for actual checks and limitations.
 
 ## The problem
 
@@ -46,3 +77,4 @@ Use fictional demonstration records only. Never commit real health records, cred
 - Repository smaller than 10 MB.
 - Maximum two submission attempts; creating or pushing a repository does not submit an entry.
 - Verify all requirements again before submitting the final repository URL.
+
