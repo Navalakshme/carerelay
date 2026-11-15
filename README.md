@@ -4,9 +4,15 @@ Elder-controlled medication coordination and accountable family care.
 
 ## Status
 
-Interactive, dependency-free browser prototype in the selected Peach & Plum design. It includes fictional dose reporting, an append-only care history, acknowledged handoffs with a simulated backup deadline, elder-approved future plan time changes, circle removal, a larger-text elder view, and an approved visit-brief download.
+The saved-care milestone adds Supabase sign-in, private care circles, expiring single-use invitations, server-validated roles, persisted scheduled occurrences and dose reports, caregiver ownership, member revocation, and elder-approved visit briefs. The selected Peach & Plum design is preserved.
 
-This is a single-session demo, not a deployed care service. Records reset on refresh. Role selection is a demonstration control, not authentication. No database, email delivery, real invitations, clinical decision support, or emergency monitoring is connected. Client-side rules are not a security boundary.
+This is an early release. Recurring schedules, live prescription-change workflows, email reminders and timed backup escalation are not implemented. The original fictional demo remains at `/demo.html`; its records reset on refresh. Clinical decision support and emergency monitoring are outside scope.
+
+Live site: https://carerelay-sand.vercel.app
+
+Application accounts are separate from the Supabase dashboard account. Create an account, confirm the email in the same browser, then sign in. Start with fictional records. The elder creates an empty circle and shares invitation codes privately. Each invited person signs in independently. Saved records are checked for updates every 15 seconds.
+
+See [backend implementation, setup and actual validation](docs/live-backend.md). Server environment variables are listed in `.env.example`; no service-role key is required. Exact direct dependency versions are pinned; a transitive dependency lockfile is pending. Install the official dependencies with `npm install` before running live server modules. Build static assets with `npm run build`.
 
 ## Run the demo
 
@@ -16,7 +22,7 @@ With Node.js 22 or later, from this folder:
 npm start
 ```
 
-Open `http://127.0.0.1:4173`. No dependency installation or API keys are needed. The server only serves the four application assets on loopback. The page works with system font fallbacks if optional Google Fonts cannot load.
+Open `http://127.0.0.1:4173/demo.html`. This local server serves the offline demo, not a local authentication backend. No API keys are needed for the fictional demo. Saved accounts use the deployed Vercel Function. The page works with system font fallbacks if optional Google Fonts cannot load.
 
 Run the domain checks:
 

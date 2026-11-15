@@ -10,3 +10,7 @@ Implemented with Codex: a buildless HTML/CSS/JavaScript demo in the selected Pea
 
 This work was not performed in Antigravity. Real accounts, database transactions, shared care circles, invitation redemption, and durable notification delivery remain unimplemented. The prototype is an inspection milestone and does not satisfy all submission gates.
 
+## 2026-11-15 - Saved-care milestone
+
+Created and applied the private Supabase schema; implemented sign-in with the official SSR SDK, cookie-based server sessions, authenticated circle RPCs, private single-use invitations, transactional dose/ownership writes, revocation and revision-bound brief approval. Preserved the fictional demo separately. Ran 14 Node tests, syntax/build checks, and rollback-only database security tests. Real email sign-up and two-browser verification require account-owner interaction and are not claimed. See `live-backend.md` for boundaries. This work was performed with Codex, not Antigravity.
+
