@@ -10,7 +10,7 @@ Live application: https://carerelay-sand.vercel.app
 - Private circles with elder, caregiver and summary-only family viewer roles.
 - Recipient-bound, expiring, single-use invitation codes and immediate membership checks after revocation.
 - Scheduled dose occurrences, self-reported outcomes and append-only corrections with observation and receipt times.
-- Prescription proposals with before/after details, explicit elder approval and 1â€“30 daily occurrences at the circle's local time.
+- Prescription proposals with before/after details, explicit elder approval and 1-30 daily occurrences at the circle's local time.
 - Durable in-app reminders and a designated backup handoff after 15 minutes without acknowledgement. One helper owns a check-in at a time.
 - Paginated care history and deterministic visit briefs, approved and stored on the server before download.
 - Duplicate-safe writes, account-scoped request keys and stale-response protection when switching circles.
