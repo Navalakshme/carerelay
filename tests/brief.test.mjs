@@ -30,3 +30,24 @@ test('brief is deterministic, scoped, evidence-only and keeps correction referen
   assert.match(text, /Scope:/);
   assert.doesNotMatch(text, /diagnosis|take another dose/i);
 });
+
+test('brief labels cancelled occurrences and handles an empty source window', () => {
+  const state = {
+    circle: { name: 'Care circle', timezone: 'UTC', revision: 1 },
+    doses: [],
+    questions: [],
+    events: [],
+  };
+  assert.match(briefText(state), /Scope:/);
+  state.doses.push({
+    id: 'cancelled',
+    label: 'Previous plan',
+    scheduled_at: '2026-11-15T08:00:00Z',
+    status: 'pending',
+    cancelled_at: '2026-11-15T07:00:00Z',
+  });
+  state.events.push({ id: 1, at: '2026-11-15T07:00:00Z', detail: 'Plan changed' });
+  const result = briefText(state);
+  assert.match(result, /cancelled by an approved plan change/);
+  assert.doesNotMatch(result, /reported time|corrects #/);
+});

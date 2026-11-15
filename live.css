@@ -12,17 +12,12 @@
   color: #412b43;
 }
 .auth-story .brand {
-  font-size: 30px;
+  font-size: 1.875rem;
 }
 .auth-story .brand b {
   color: #ad5039;
 }
-.auth-story h1 {
-  font-size: 40px;
-  line-height: 1.25;
-  letter-spacing: -1.5px;
-  margin-top: 18px;
-}
+
 .auth-story p {
   color: #765c58;
 }
@@ -33,7 +28,7 @@
   margin: 25px auto;
 }
 .auth-story a {
-  font-size: 13px;
+  font-size: 0.8125rem;
 }
 .auth-main {
   display: grid;
@@ -46,14 +41,14 @@
 }
 .auth-box h1 {
   margin: 24px 0 10px;
-  font-size: 29px;
+  font-size: 1.8125rem;
 }
 .auth-submit {
   margin-top: 24px;
   min-height: 48px;
 }
 .auth-switch {
-  font-size: 13px;
+  font-size: 0.8125rem;
   text-align: center;
 }
 .auth-switch button {
@@ -64,7 +59,7 @@
   margin-top: 26px;
 }
 .form-error {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #a02e32;
   line-height: 1.7;
 }
@@ -94,7 +89,7 @@
   justify-content: center;
 }
 .footer-actions a {
-  font-size: 12px;
+  font-size: 0.75rem;
   padding: 10px;
 }
 .sr-only {
@@ -135,9 +130,6 @@
   .auth-story {
     padding: 35px;
   }
-  .auth-story h1 {
-    font-size: 31px;
-  }
 }
 @media (max-width: 650px) {
   .auth-layout {
@@ -166,7 +158,7 @@
     max-width: 100%;
   }
   .account .tiny {
-    font-size: 11px;
+    font-size: 0.875rem;
   }
   .onboarding {
     margin-top: 26px;
@@ -182,7 +174,7 @@
   }
 }
 .auth-story h2 {
-  font-size: 40px;
+  font-size: 2.5rem;
   line-height: 1.25;
   letter-spacing: -1.5px;
   margin-top: 18px;
@@ -191,15 +183,15 @@
   color: #754839;
 }
 .tiny {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #66515e;
 }
 .small {
   min-height: 44px;
-  font-size: 14px;
+  font-size: 0.875rem;
 }
 .badge {
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 .inbox,
 .plan-list {
@@ -222,10 +214,13 @@ textarea {
   scroll-margin: 24px;
 }
 .form-error {
-  font-size: 15px;
+  font-size: 0.9375rem;
 }
-#main:focus {
-  outline: 0;
+#main:focus-visible,
+#main h1:focus-visible,
+.form-error:focus {
+  outline: 3px solid #754839;
+  outline-offset: 5px;
 }
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -238,7 +233,7 @@ textarea {
 }
 @media (max-width: 650px) {
   .auth-story h2 {
-    font-size: 28px;
+    font-size: 1.75rem;
   }
   .stats {
     gap: 10px;
@@ -267,4 +262,78 @@ textarea {
 
 .auth-story a {
   color: #8f3f2b;
+}
+
+/* Preserve readable reflow with large default fonts and narrow viewports. */
+h1,
+h2,
+h3,
+.dose-body,
+.member-info {
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+.auth-story,
+.auth-box,
+.stat,
+.actions {
+  min-width: 0;
+}
+.form-error {
+  scroll-margin-block: 2rem;
+}
+.skip:focus {
+  z-index: 100;
+}
+.footer-actions a,
+.auth-story a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+@media (max-width: 650px) {
+  .stats {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 8rem), 1fr));
+  }
+  .sidebar nav {
+    flex-wrap: wrap;
+    overflow: visible;
+  }
+  .navbtn {
+    white-space: normal;
+    text-align: left;
+  }
+  .page-title {
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .account .tiny {
+    font-size: 0.875rem;
+  }
+}
+@media (forced-colors: active) {
+  button,
+  input,
+  select,
+  textarea,
+  .card,
+  .badge {
+    border: 1px solid CanvasText;
+  }
+  :focus-visible {
+    outline: 3px solid Highlight !important;
+  }
+  .navbtn[aria-current='page'] {
+    border: 2px solid Highlight;
+  }
+}
+
+.badge {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  max-width: 100%;
+}
+.card-head {
+  flex-wrap: wrap;
+  gap: 1rem;
 }

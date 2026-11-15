@@ -27,6 +27,9 @@ test('saved circle, approved plan, corrected ledger, recipient invite, viewer pr
   const errors = [];
   page.on('pageerror', (error) => errors.push(error.message));
   await page.goto('/');
+  await expect(page.locator('h1')).toBeVisible();
+  if (!(await page.getByLabel('Circle name').isVisible()))
+    await page.getByRole('button', { name: 'Create another circle', exact: true }).click();
   await page.getByLabel('Circle name').fill('Browser care circle');
   await page.getByRole('button', { name: 'Create private circle' }).click();
   await expect(page.getByRole('heading', { name: 'Today, together' })).toBeVisible();

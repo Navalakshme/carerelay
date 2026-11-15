@@ -12,6 +12,8 @@ async function request({
   rpcError = null,
   authError = null,
   headers = {},
+  auth = {},
+  rpcData,
 } = {}) {
   const calls = [],
     logs = [];
@@ -23,10 +25,16 @@ async function request({
       resetPasswordForEmail: async () => ({}),
       updateUser: async () => ({}),
       signInWithPassword: async () => ({ data: { user: account } }),
+      signUp: async () => ({ data: { user: account, session: null } }),
+      ...auth,
     },
     rpc: async (name, args) => {
       calls.push({ name, args });
-      return { data: name === 'care_bootstrap' ? [] : { circle: { id } }, error: rpcError };
+      return {
+        data:
+          rpcData === undefined ? (name === 'care_bootstrap' ? [] : { circle: { id } }) : rpcData,
+        error: rpcError,
+      };
     },
   };
   const response = {
@@ -141,4 +149,134 @@ test('password recovery requests give a generic response and reset requires sign
       .statusCode,
     400,
   );
+});
+
+test('sign-in and sign-up validate input and expose only public account fields', async () => {
+  const body = {
+    action: 'sign-up',
+    email: 'reviewer@example.invalid',
+    password: 'long imaginary password',
+    name: 'Reviewer',
+  };
+  for (const changes of [
+    { email: 'invalid' },
+    { password: 'short' },
+    { password: 'x'.repeat(129) },
+    { name: '' },
+  ])
+    assert.equal(
+      (await request({ method: 'POST', body: { ...body, ...changes } })).statusCode,
+      400,
+    );
+  const pending = await request({ method: 'POST', body });
+  assert.equal(pending.body.user, null);
+  assert.match(pending.body.message, /confirmation email/);
+  const active = await request({
+    method: 'POST',
+    body,
+    auth: {
+      signUp: async () => ({ data: { user: account, session: { access_token: 'PRIVATE_TOKEN' } } }),
+    },
+  });
+  assert.deepEqual(active.body.user, { id, name: 'Care owner' });
+  assert.doesNotMatch(JSON.stringify(active), /PRIVATE_TOKEN/);
+  assert.equal(
+    (await request({ method: 'POST', body: { ...body, action: 'sign-in' } })).statusCode,
+    200,
+  );
+  for (const action of ['sign-in', 'sign-up'])
+    for (const status of [400, 429]) {
+      const method = action === 'sign-in' ? 'signInWithPassword' : 'signUp';
+      assert.equal(
+        (
+          await request({
+            method: 'POST',
+            body: { ...body, action },
+            auth: { [method]: async () => ({ error: { status } }) },
+          })
+        ).statusCode,
+        status === 429 ? 429 : action === 'sign-in' ? 401 : 400,
+      );
+    }
+});
+test('confirmation and recovery callbacks have fixed local redirects', async () => {
+  assert.equal((await request({ url: '/api/care?code=valid' })).headers.location, '/');
+  assert.equal(
+    (await request({ url: '/api/care?code=valid&flow=recovery&next=https://evil.example' })).headers
+      .location,
+    '/?recovery=1',
+  );
+  assert.equal(
+    (
+      await request({
+        url: '/api/care?code=invalid',
+        auth: { exchangeCodeForSession: async () => ({ error: { status: 400 } }) },
+      })
+    ).headers.location,
+    '/?confirmation=failed',
+  );
+  assert.equal((await request({ url: '/api/care?code=' + 'x'.repeat(2049) })).statusCode, 400);
+  assert.equal((await request({ headers: { 'sec-fetch-site': 'cross-site' } })).statusCode, 403);
+});
+test('recovery provider failures, sign-out and password updates have safe errors', async () => {
+  for (const status of [429, 503])
+    assert.equal(
+      (
+        await request({
+          method: 'POST',
+          body: { action: 'recover', email: 'care@example.invalid' },
+          auth: { resetPasswordForEmail: async () => ({ error: { status } }) },
+        })
+      ).statusCode,
+      status,
+    );
+  assert.equal((await request({ method: 'POST', body: { action: 'sign-out' } })).statusCode, 200);
+  assert.equal(
+    (
+      await request({
+        method: 'POST',
+        body: { action: 'sign-out' },
+        auth: { signOut: async () => ({ error: { status: 500 } }) },
+      })
+    ).statusCode,
+    500,
+  );
+  assert.equal(
+    (
+      await request({
+        method: 'POST',
+        body: { action: 'update-password', password: 'long imaginary password' },
+      })
+    ).statusCode,
+    200,
+  );
+  assert.equal(
+    (
+      await request({
+        method: 'POST',
+        body: { action: 'update-password', password: 'long imaginary password' },
+        auth: { updateUser: async () => ({ error: { status: 400 } }) },
+      })
+    ).statusCode,
+    400,
+  );
+});
+test('unhandled provider failures and domain errors stay inside the response boundary', async () => {
+  const r = await request({
+    auth: {
+      getUser: async () => {
+        throw Error('PRIVATE_PROVIDER_DETAIL');
+      },
+    },
+  });
+  assert.equal(r.statusCode, 500);
+  assert.doesNotMatch(JSON.stringify(r), /PRIVATE_PROVIDER_DETAIL/);
+  const invalid = await request({
+    method: 'POST',
+    body: { action: 'question', circle: id, requestId: id, body: 'Question' },
+    rpcData: { error: 'Invitation invalid or expired.' },
+  });
+  assert.equal(invalid.statusCode, 400);
+  assert.equal((await request({ url: `/api/care?circle=${id}&view=unknown` })).statusCode, 400);
+  assert.equal((await request({ url: `/api/care?circle=${id}&revision=9` })).statusCode, 200);
 });

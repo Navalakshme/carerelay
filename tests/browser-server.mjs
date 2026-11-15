@@ -1,3 +1,4 @@
+import { publicAssets } from '../lib/public-assets.mjs';
 // Local browser integration harness. Never included in the deployment.
 // Uses the real HTTP handler and real PostgreSQL RPCs; only the identity provider
 // is replaced by fixed, disposable fixture accounts (no usable credentials).
@@ -37,18 +38,7 @@ const handler = createHandler(
   },
   { APP_ORIGIN: 'http://127.0.0.1:4174' },
 );
-const assets = new Set([
-  'index.html',
-  'styles.css',
-  'live.css',
-  'live.mjs',
-  'artwork.mjs',
-  'lib/sync.mjs',
-  'lib/brief.mjs',
-  'demo.html',
-  'demo.mjs',
-  'domain.mjs',
-]);
+const assets = new Set(publicAssets);
 createServer(async (req, res) => {
   if (req.url.startsWith('/api/care')) {
     await handler(req, res);

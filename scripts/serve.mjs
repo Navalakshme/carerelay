@@ -1,19 +1,9 @@
+import { publicAssets } from '../lib/public-assets.mjs';
 import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 const root = new URL('../', import.meta.url);
-const allowed = new Set([
-  'index.html',
-  'styles.css',
-  'live.css',
-  'live.mjs',
-  'artwork.mjs',
-  'demo.html',
-  'demo.mjs',
-  'domain.mjs',
-  'lib/sync.mjs',
-  'lib/brief.mjs',
-]);
+const allowed = new Set(publicAssets);
 createServer(async (req, res) => {
   const path = new URL(req.url, 'http://localhost').pathname.slice(1) || 'demo.html';
   if (!allowed.has(path)) {

@@ -17,3 +17,7 @@ Created and applied the private Supabase schema; implemented sign-in with the of
 ## 2026-11-15 - Quality upgrade
 
 Implemented with Codex: a testable HTTP boundary, stale-read guards, deterministic approved snapshots, recipient-bound invitations, limited viewer visibility, idempotent mutations, append-only corrections, prescription proposals/approvals, daily occurrences, a durable in-app inbox and timed backup worker. Added a lockfile, CI, PostgreSQL migration/permission tests, actual concurrent ownership tests and a browser journey through the real HTTP handler and database. Automated axe, keyboard focus and mobile overflow checks cover the tested screens. This does not claim hosted email delivery, full WCAG certification, independent penetration testing or Antigravity development.
+
+## 2026-11-15 - Code-quality refactor
+
+Refactored with Codex: separated account/care rendering, layout, plan-dialog markup, accessibility behavior and HTTP transport from the live controller. Replaced the large action switch with named commands and removed discarded legacy RPC argument construction in favor of one normalized validator per action. Added a shared explicit public-asset allowlist and ESLint configuration. The existing server adapter, SQL permissions and persisted schema are unchanged; no database migration is required. This entry records implementation work and does not claim a new evaluator score or completed CI verification.
