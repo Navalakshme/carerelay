@@ -2,85 +2,57 @@
 
 Elder-controlled medication coordination and accountable family care.
 
-## Status
+Live application: https://carerelay-sand.vercel.app
 
-The saved-care milestone adds Supabase sign-in, private care circles, expiring single-use invitations, server-validated roles, persisted scheduled occurrences and dose reports, caregiver ownership, member revocation, and elder-approved visit briefs. The selected Peach & Plum design is preserved.
+## What works
 
-This is an early release. Recurring schedules, live prescription-change workflows, email reminders and timed backup escalation are not implemented. The original fictional demo remains at `/demo.html`; its records reset on refresh. Clinical decision support and emergency monitoring are outside scope.
+- Confirmed-email accounts and server-managed HttpOnly sessions.
+- Private circles with elder, caregiver and summary-only family viewer roles.
+- Recipient-bound, expiring, single-use invitation codes and immediate membership checks after revocation.
+- Scheduled dose occurrences, self-reported outcomes and append-only corrections with observation and receipt times.
+- Prescription proposals with before/after details, explicit elder approval and 1â€“30 daily occurrences at the circle's local time.
+- Durable in-app reminders and a designated backup handoff after 15 minutes without acknowledgement. One helper owns a check-in at a time.
+- Paginated care history and deterministic visit briefs, approved and stored on the server before download.
+- Duplicate-safe writes, account-scoped request keys and stale-response protection when switching circles.
 
-Live site: https://carerelay-sand.vercel.app
-
-Application accounts are separate from the Supabase dashboard account. Create an account, confirm the email in the same browser, then sign in. Start with fictional records. The elder creates an empty circle and shares invitation codes privately. Each invited person signs in independently. Saved records are checked for updates every 15 seconds.
-
-See [backend implementation, setup and actual validation](docs/live-backend.md). Server environment variables are listed in `.env.example`; no service-role key is required. Exact direct dependency versions are pinned; a transitive dependency lockfile is pending. Install the official dependencies with `npm install` before running live server modules. Build static assets with `npm run build`.
-
-## Run the demo
-
-With Node.js 22 or later, from this folder:
-
-```powershell
-npm start
-```
-
-Open `http://127.0.0.1:4173/demo.html`. This local server serves the offline demo, not a local authentication backend. No API keys are needed for the fictional demo. Saved accounts use the deployed Vercel Function. The page works with system font fallbacks if optional Google Fonts cannot load.
-
-Run the domain checks:
-
-```powershell
-npm test
-```
-
-In restricted Windows environments where Node reports an `EPERM` while resolving parent directories, use `node --preserve-symlinks --preserve-symlinks-main scripts/serve.mjs` and `node --preserve-symlinks --preserve-symlinks-main --test tests/domain.test.mjs`.
-
-## Walk through the fictional story
-
-1. Start as Anya. Report the morning outcome as **I'm unsure** and confirm. The care history retains this report.
-2. Advance the demo clock by 30 minutes before acknowledging. Ravi becomes the assigned backup exactly once. Switch the demo role to Ravi and acknowledge ownership.
-3. Open **Medication plan** and propose a different time. Today's occurrence stays at 08:00 while approval is pending.
-4. Switch to Meera and approve the request. The approved time is shown for the next demonstration day; this prototype does not generate that day's occurrences.
-5. Open **Visit brief**, add a question, approve as Meera, and download the text brief. A new care event invalidates that approval.
-6. In **Care circle**, Meera can remove a participant. Their role disappears from this session's selector. Server-side session revocation remains future work.
-
-`domain.mjs` contains care rules separately from `app.mjs` rendering. Tests cover duplicate and conflicting completion reports, uncertainty history, single ownership, one-time backup escalation, elder approval, demo role restrictions, revocation, validation, and brief approval invalidation. See [prototype validation](docs/prototype-validation.md) for actual checks and limitations.
-
-## The problem
-
-Elders, relatives, and caretakers often have separate versions of a medication plan. A reminder alone cannot establish whether a dose was taken, whether someone is helping, or whether a prescription changed. CareRelay will provide a shared record while letting the elder control participation.
-
-## Proposed first release
-
-1. Accessible elder screen with today's doses, appointments, and a request-help action.
-2. Authenticated care circles with expiring invitation passcodes and revocable roles.
-3. Dose events that distinguish reported taken, skipped, overdue, and uncertain outcomes.
-4. Acknowledged caregiver handoffs with a designated backup and duplicate-safe email reminders.
-5. Prescription change proposals with visible history and explicit confirmation before activation.
-6. An appointment brief assembled from recorded events and approved by the elder before export.
-
-See [the product brief](docs/product-brief.md), [security design](docs/security-design.md), and [implementation plan](docs/implementation-plan.md).
+Reminders appear in the application inbox; external email/SMS/push and emergency monitoring are not connected. The application does not diagnose, prescribe, recommend another dose, or verify ingestion. Use imaginary demonstration records for the hackathon. The separate offline story at `/demo.html` resets on refresh.
 
 ## Development
 
-This repository starts on `main` and must retain exactly one branch locally and remotely. Do not create feature branches or accept automated branch-creating dependency updates. Work in small commits on `main`.
+Use Node.js 22:
 
-Open this folder in Google Antigravity. Record actual Antigravity development work in `docs/development-log.md`; never manufacture usage evidence.
-
-Run the repository check from this folder:
-
-```powershell
-powershell -NoProfile -File scripts/check-repository.ps1
+```sh
+npm ci --ignore-scripts
+npm run check
+npm test
+npm run build
 ```
 
-The check measures a tracked-source archive and Git storage separately; neither defines the organizer's unspecified repository-size measurement. Keep ample margin under 10 MB, avoid binary assets and generated files, and confirm the organizer's measurement before submission.
+`npm start` opens a loopback static server at `http://127.0.0.1:4173/demo.html`. It serves the offline demonstration; saved accounts use the deployed Vercel Function. The frontend has no framework build dependency and requests no third-party fonts.
 
-## Data and safety
+See [quality evidence and limitations](docs/quality-validation.md), [backend setup](docs/live-backend.md), [product brief](docs/product-brief.md) and [development log](docs/development-log.md). CI runs syntax/format checks, unit/API tests, actual PostgreSQL tests, simultaneous ownership claims, browser integration, automated accessibility, dependency audit and build checks.
 
-Use fictional demonstration records only. Never commit real health records, credentials, database exports, or email addresses belonging to care recipients. The planned application coordinates recorded care; it must not recommend doses, diagnose conditions, or infer that a reminder acknowledgement proves ingestion.
+## Backend setup
 
-## Submission constraints
+Configure the three variables in `.env.example` in Vercel. No service-role key is required by the application. For a new Supabase project apply `001_care_backend.sql`, then `003_quality_upgrade.sql`, then `006_approval_revision.sql`, then `005_reminder_schedule.sql`. For an existing project already on 001, apply only 003, 006 and 005. Migrations preserve care records. Historic unused unbound invitation codes are revoked; create a new recipient-bound code when needed.
 
-- Public GitHub repository.
-- Exactly one branch: `main`.
-- Repository smaller than 10 MB.
-- Maximum two submission attempts; creating or pushing a repository does not submit an entry.
-- Verify all requirements again before submitting the final repository URL.
+Enable email confirmation. Set the Auth Site URL to the production origin and redirect allowlist to `/api/care` and `/api/care?flow=recovery` on that same origin. The project owner controls SMTP delivery. Each participant uses their own confirmed account; the owner creates a circle and shares the code privately with its named email recipient.
 
+## Test the live code locally
+
+Create an empty disposable PostgreSQL database named `carerelay_test` on loopback. Set `DATABASE_URL`, then run:
+
+```sh
+npm run test:db
+npx playwright install --with-deps chromium
+npm run test:browser
+npm audit --audit-level=moderate
+```
+
+The browser harness replaces only the identity provider, uses fixed synthetic identities without usable passwords, and executes the real HTTP handler and PostgreSQL RPCs. It never connects to the hosted care database. Hosted Supabase authentication/email must also be checked independently. The integration harness is excluded from the deployment.
+
+## Repository and submission
+
+Keep exactly one branch, `main`, and keep source and Git storage below the organizer's 10 MB limit. Do not commit dependencies, build output, credentials or database exports. `scripts/check-source.mjs` enforces a 9 MB source budget; the PowerShell repository check also measures Git storage and remote branches.
+
+The public repository is not itself a hackathon submission. The organizer permits at most two submission attempts. Complete authentic Google Antigravity development and record it if required; the existing Codex work is identified honestly in the development log. No judge score is guaranteed.

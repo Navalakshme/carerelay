@@ -14,15 +14,15 @@ An account may belong to multiple circles. Authorization must be checked against
 
 ## Distinctive features
 
-| Feature | Specific behavior | Evidence in a demo |
-| --- | --- | --- |
-| Care relay | An overdue task goes to the chosen helper; acknowledgement assigns ownership; a timed-out handoff goes to the backup. | Advance a test clock and show one owner and one escalation. |
-| Honest dose ledger | Separate scheduled dose occurrences from self-reported outcomes; retain who reported what and when. | Two devices report the same occurrence without duplicating completion. |
-| Uncertain-dose flow | A person can report uncertainty and request caregiver review; the app never suggests taking another dose. | Show uncertainty without converting it into taken or skipped. |
-| Elder consent controls | Invitations expire; roles restrict visibility; revocation ends access. | Revoke a viewer and show their next request denied. |
-| Prescription change gate | Proposed edits show before/after values, effective time, author, and approval status. | Pending edits do not change active reminders. |
-| Explainable reminders | Each reminder links to its scheduled occurrence and records why and to whom it was sent. | Retry a failed delivery without sending duplicate messages. |
-| Visit-ready brief | Deterministic summary of recorded misses, uncertainties, changes, and questions, with source links. | Preview and approve a brief without invented medical conclusions. |
+| Feature                  | Specific behavior                                                                                                     | Evidence in a demo                                                     |
+| ------------------------ | --------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| Care relay               | An overdue task goes to the chosen helper; acknowledgement assigns ownership; a timed-out handoff goes to the backup. | Advance a test clock and show one owner and one escalation.            |
+| Honest dose ledger       | Separate scheduled dose occurrences from self-reported outcomes; retain who reported what and when.                   | Two devices report the same occurrence without duplicating completion. |
+| Uncertain-dose flow      | A person can report uncertainty and request caregiver review; the app never suggests taking another dose.             | Show uncertainty without converting it into taken or skipped.          |
+| Elder consent controls   | Invitations expire; roles restrict visibility; revocation ends access.                                                | Revoke a viewer and show their next request denied.                    |
+| Prescription change gate | Proposed edits show before/after values, effective time, author, and approval status.                                 | Pending edits do not change active reminders.                          |
+| Explainable reminders    | Each reminder links to its scheduled occurrence and records why and to whom it was sent.                              | Retry a failed delivery without sending duplicate messages.            |
+| Visit-ready brief        | Deterministic summary of recorded misses, uncertainties, changes, and questions, with source links.                   | Preview and approve a brief without invented medical conclusions.      |
 
 ## Accessibility
 
