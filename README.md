@@ -4,9 +4,19 @@ Elder-controlled medication coordination and accountable family care.
 
 Live application: https://carerelay-sand.vercel.app
 
+## Evaluator access
+
+Live application: https://carerelay-sand.vercel.app
+
+Account-free interactive demonstration: https://carerelay-sand.vercel.app/demo.html
+
+The separate account-free demonstration uses imaginary records, resets on refresh and does not access the private saved-care backend. To review saved-care workflows, sign up for a confirmed-email account and create a private care circle, or use access supplied privately by the project owner. Reviewers can inspect the source and successful CI runs for permission, persistence, concurrency and browser integration evidence. No login credentials are published in this repository.
+
 ## Chosen vertical and persona
 
-CareRelay targets elder care and family caregiver coordination. Its primary persona is an elder who needs a clear shared medication record while retaining control over participation and plan approval. Relatives and caretakers provide support through a private care circle. This describes the implemented vertical; the organizer's exact challenge title must be matched against the supplied challenge list before submission.
+**Challenge: Elderly Care & Medication Management Platform.**
+
+CareRelay targets elder care and family caregiver coordination. Its primary persona is an elder who needs a clear shared medication record while retaining control over participation and plan approval. Relatives and caretakers provide support through a private care circle.
 
 The problem is conflicting or incomplete care information: a reminder alone cannot establish whether a dose was taken, which helper is responsible, or whether a prescription change has been approved.
 
@@ -38,8 +48,8 @@ Browser requests pass through a same-origin Vercel function. It verifies the Sup
 - Medication labels and instructions come from an existing clinician prescription. Reports and acknowledgements are human statements, not proof of ingestion or a medical assessment.
 - Daily plans contain 1-30 occurrences. The selected circle timezone controls display and recurrence; date inputs explicitly identify the device timezone.
 - Records are saved online. Offline changes are not queued, and no emergency response or monitoring is promised.
-- Demonstration records describe imaginary people. Automated test identities have no usable passwords. Credentials and database exports must stay outside the repository.
-- The implementation uses deterministic rules rather than conversational AI. Eligibility depends on the selected challenge allowing this approach. See [validation scope and remaining assurance work](docs/quality-validation.md).
+- Demonstration records describe imaginary people. Automated test identities have no usable passwords. Credentials, provider secrets and database exports must stay outside the repository.
+- The implementation uses deterministic rules rather than conversational AI and does not require an external model API. See [validation scope and remaining assurance work](docs/quality-validation.md).
 
 ## What works
 
@@ -90,6 +100,6 @@ The browser harness replaces only the identity provider, uses fixed synthetic id
 
 ## Repository and submission
 
-Keep exactly one branch, `main`, and keep source and Git storage below the organizer's 10 MB limit. Do not commit dependencies, build output, credentials or database exports. `scripts/check-source.mjs` enforces a 9 MB source budget; the PowerShell repository check also measures Git storage and remote branches.
+Keep exactly one branch, `main`, and keep source and Git storage below the organizer's 10 MB limit. Do not commit dependencies, build output, production/provider credentials or database exports. `scripts/check-source.mjs` enforces a 9 MB source budget; the PowerShell repository check also measures Git storage and remote branches.
 
 The public repository is not itself a hackathon submission. The organizer permits at most two submission attempts. Complete authentic Google Antigravity development and record it if required; the existing Codex work is identified honestly in the development log. No judge score is guaranteed.
